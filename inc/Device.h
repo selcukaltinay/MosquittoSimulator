@@ -14,7 +14,7 @@ class Device {
 public:
 
     Device(int DeviceId, std::string SensorType, int dataMin, int dataMax, int Interval) : DeviceId(DeviceId), SensorType(SensorType), dataMin(dataMin), dataMax(dataMax), Interval(Interval) {
-        mqttConfig("localhost:1883", "consumer");
+        mqttConfig("localhost:1883", "Simulator");
         startThread();
     }
 

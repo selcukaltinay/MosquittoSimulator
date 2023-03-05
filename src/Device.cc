@@ -56,6 +56,7 @@ void Device::mqttConfig(std::string ipport, std::string id) {
     connOpts.set_keep_alive_interval(20);
     connOpts.set_clean_session(true);
     cli->connect(connOpts);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
 
 }
 
