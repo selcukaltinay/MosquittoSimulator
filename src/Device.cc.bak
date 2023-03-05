@@ -1,31 +1,29 @@
 #include <Device.h>
 
-//mqtt::client* Device::cli = nullptr;
-mqtt::async_client* Device::cli = nullptr;
-
 std::mutex Device::publishMutex;
+mqtt::client* Device::cli;
 
 void Device::publishFnc() {
 
-    if (cli == nullptr)
+    if (this->cli == nullptr)
         mqttConfig("localhost:1883", "consumer");
     
 	while(true) {
         
 		std::this_thread::sleep_for(std::chrono::seconds(this->Interval));
-		std::lock_guard<std::mutex> lock(publishMutex);
-        topic = this->SensorType;
+		std::lock_guard<std::mutex> lock(this->publishMutex);
+        topic=this->DeviceId  + "/" + this->SensorType;
 		this->Data = generateData(this->dataMin, this->dataMax);
-        std::cout << "Topic: " << topic << std::endl;
-		std::cout << "Device Id:" << this->DeviceId << " - Sensor Type: " << this->SensorType << " - Data: " << this->Data << std::endl;
+        std::cout << topic << std::endl;
         try {
             auto msg = mqtt::make_message(topic, std::to_string(this->Data));
-            cli->publish(msg);
+            this->cli->publish(msg);
         }
         catch (const mqtt::exception& exc) {
             std::cerr << "Error: " << exc.what() << " ["
                 << exc.get_reason_code() << "]" << std::endl;
         }
+		std::cout << "Device Id:" << this->DeviceId << " - Sensor Type: " << this->SensorType << " - Data: " << this->Data << std::endl;
 		//std::this_thread::sleep_for(3s);
 	
 	}
@@ -37,9 +35,9 @@ Device::~Device() {
 		delete publishThread;
 	}*/
 
-    cli->disconnect();
-    if( cli != nullptr)
-        delete cli;
+    this->cli->disconnect();
+    if( this->cli != nullptr)
+        delete this->cli;
 }
 
 void Device::startThread() {
@@ -48,23 +46,20 @@ void Device::startThread() {
 }
 
 void Device::mqttConfig(std::string ipport, std::string id) {
-    cli = new mqtt::async_client(ipport, id);
-    //cli = new mqtt::client(ipport, id);
-
+    this->cli = new mqtt::client(ipport, id);
     mqtt::connect_options connOpts;
     
     connOpts.set_keep_alive_interval(20);
     connOpts.set_clean_session(true);
-    cli->connect(connOpts);
-
 }
 
 void Device::mqttPublish(std::string data) {
     try {
+        std::string topic = this->DeviceId  + "/" + this->SensorType;
         std::cout << topic << std::endl;
         std::cout << data << std::endl;
         auto msg = mqtt::make_message(topic, data);
-        cli->publish(msg);
+        this->cli->publish(msg);
         // Second way to publish -> client.publish(TOPIC, PAYLOAD, strlen(PAYLOAD), 0, false);
     }
     catch (const mqtt::exception& exc) {
