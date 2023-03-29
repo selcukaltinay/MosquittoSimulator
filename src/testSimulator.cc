@@ -12,6 +12,7 @@ int main()
 	Device dev5(5, "CO2", 20, 30, 1);
 	Device dev6(5, "O2", 40, 70, 1);
 	Device dev7(5, "Noise", 80, 110, 1);
+	Device dev8(6, "Pulse", 76, 80, 5);
 
 	
 	while(true) {
