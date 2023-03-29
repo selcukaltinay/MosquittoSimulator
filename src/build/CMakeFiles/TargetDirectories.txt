@@ -1,0 +1,3 @@
+/home/satech/work/MqttSimulator/src/build/CMakeFiles/testSimulator.dir
+/home/satech/work/MqttSimulator/src/build/CMakeFiles/edit_cache.dir
+/home/satech/work/MqttSimulator/src/build/CMakeFiles/rebuild_cache.dir

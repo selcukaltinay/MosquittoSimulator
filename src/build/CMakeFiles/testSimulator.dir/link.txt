@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/testSimulator.dir/Device.cc.o CMakeFiles/testSimulator.dir/testSimulator.cc.o -o testSimulator  -lpaho-mqtt3as -lpaho-mqttpp3 
